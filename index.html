@@ -950,7 +950,12 @@ async function onMainClick(e) {
   const d = b.dataset;
   if (S.listMenu && d.act !== 'listMenu') S.listMenu = false;
   if (d.sugg) return addItem(d.sugg);
-  if (d.day && b.classList.contains('mcell') && d.day === S.selDay) return eventModal();
+  // Un clic sur une case du mois ouvre directement la création d'un évènement ce jour-là
+  if (d.day && b.classList.contains('mcell')) {
+    S.selDay = d.day; const p = parse(d.day);
+    if (p.getMonth() !== S.month.getMonth()) S.month = firstOfMonth(p);
+    render(); return eventModal();
+  }
   if (d.day) { S.selDay = d.day; const p = parse(d.day); if (p.getMonth() !== S.month.getMonth()) S.month = firstOfMonth(p); return render(); }
   if (d.nav) {
     const m = S.month, bm = S.bMonth;
