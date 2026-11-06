@@ -189,6 +189,43 @@ legend{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:8px}
 .gate .row .btn{flex:1}
 .gate hr{border:0;border-top:1px solid var(--line);margin:8px 0;width:100%}
 .err{color:var(--danger);font-size:15px;margin:0;min-height:1em}
+
+[hidden]{display:none!important}
+.cal button.ferie span{color:var(--danger);font-weight:800}
+.cal button.ferie.is-today span{color:var(--brand-ink);background:var(--danger)}
+.cal i b.ring{background:transparent;border:1.5px solid var(--muted);width:6px;height:6px;box-sizing:border-box}
+.hol .ev{cursor:default}
+.hol .time{color:var(--muted);font-weight:400}
+.stripe.f{background:var(--danger)}
+.stripe.p{background:repeating-linear-gradient(180deg,var(--muted) 0 4px,transparent 4px 7px)}
+.shead{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;margin:-6px -4px 4px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.shead h2{grid-column:2;text-align:center;font-size:20px}
+.closex{grid-column:1;grid-row:1;width:36px;height:36px;border-radius:50%;border:0;background:var(--sunk);font-size:16px;font-weight:800}
+.sheet input.big{padding:16px;font-size:17px}
+.sheet label.toggle{flex-direction:row;align-items:center;gap:12px;color:var(--ink);font-size:16px;cursor:pointer}
+.toggle input{position:absolute;opacity:0;width:1px;height:1px}
+.track{flex:none;width:46px;height:28px;border-radius:14px;background:var(--line);position:relative;transition:background .15s}
+.track::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s}
+.toggle input:checked+.track{background:var(--brand)}
+.toggle input:checked+.track::after{transform:translateX(18px)}
+.toggle input:focus-visible+.track{outline:3px solid var(--brand);outline-offset:2px}
+.sheet legend{color:var(--ink)}
+.sheet legend b{color:var(--brand);font-weight:600}
+.palette{display:grid;grid-template-columns:repeat(9,1fr);gap:12px 4px;justify-items:center}
+.sheet label.pc{display:block;cursor:pointer}
+.pc input{position:absolute;opacity:0;pointer-events:none}
+.pc span{display:block;width:30px;height:30px;border-radius:50%;border:4px solid var(--c);transition:background .12s}
+.pc input:checked+span{background:var(--c)}
+.pc input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
+.people{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.psep{width:1px;height:34px;background:var(--line)}
+.pp{width:48px;height:48px;border-radius:50%;border:0;display:grid;place-items:center;color:#fff;font-size:17px;padding:0;opacity:.4;transition:opacity .12s}
+.pp.all{background:var(--sunk);color:var(--muted)}
+.pp.all svg{width:28px;height:28px}
+.pp[aria-pressed="true"]{opacity:1;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--brand)}
+.btn.soft{background:var(--sunk);color:var(--ink)}
+.more{display:flex;flex-direction:column;gap:14px}
+@media (max-width:380px){.palette{grid-template-columns:repeat(6,1fr)}}
 </style>
 </head>
 <body>
@@ -454,7 +491,7 @@ const ICONS = {
   budget: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M15.5 14.5h2"/></svg>',
   gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
 };
-const TABS = [['agenda', 'Agenda'], ['listes', 'Listes'], ['repas', 'Repas'], ['budget', 'Budget']];
+const TABS = [['agenda', 'Calendrier'], ['listes', 'Listes'], ['repas', 'Repas'], ['budget', 'Budget']];
 
 function renderApp() {
   const app = $('#app'); app.className = '';
@@ -491,18 +528,106 @@ function render() {
   }
 }
 
-/* ---------- Vue Agenda ---------- */
+/* ---------- Jours fériés et fêtes ---------- */
+function easter(y) {
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4,
+    f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30,
+    i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451),
+    n = h + l - 7 * m + 114;
+  return new Date(y, Math.floor(n / 31) - 1, (n % 31) + 1);
+}
+const nthSunday = (y, m, n) => { const d = new Date(y, m, 1); return addDays(d, (7 - d.getDay()) % 7 + 7 * (n - 1)); };
+const lastSunday = (y, m) => { const d = new Date(y, m + 1, 0); return addDays(d, -d.getDay()); };
+const HCACHE = {};
+function holidays(y) {
+  if (HCACHE[y]) return HCACHE[y];
+  const E = easter(y), H = {};
+  const add = (d, name, ferie) => (H[ymd(d)] ||= []).push({ name, ferie });
+  // Jours fériés
+  add(new Date(y, 0, 1), "Jour de l'An", 1);
+  add(addDays(E, 1), 'Lundi de Pâques', 1);
+  add(new Date(y, 4, 1), 'Fête du Travail', 1);
+  add(new Date(y, 4, 8), 'Victoire 1945', 1);
+  add(addDays(E, 39), 'Ascension', 1);
+  add(addDays(E, 50), 'Lundi de Pentecôte', 1);
+  add(new Date(y, 6, 14), 'Fête nationale', 1);
+  add(new Date(y, 7, 15), 'Assomption', 1);
+  add(new Date(y, 10, 1), 'Toussaint', 1);
+  add(new Date(y, 10, 11), 'Armistice 1918', 1);
+  add(new Date(y, 11, 25), 'Noël', 1);
+  // Fêtes et dates à retenir
+  const j2 = new Date(y, 0, 2);
+  add(addDays(j2, (7 - j2.getDay()) % 7), 'Épiphanie', 0);
+  add(new Date(y, 1, 2), 'Chandeleur', 0);
+  add(new Date(y, 1, 14), 'Saint-Valentin', 0);
+  add(addDays(E, -47), 'Mardi gras', 0);
+  add(nthSunday(y, 2, 1), 'Fête des grands-mères', 0);
+  add(lastSunday(y, 2), "Passage à l'heure d'été", 0);
+  add(new Date(y, 3, 1), "Poisson d'avril", 0);
+  add(E, 'Pâques', 0);
+  add(addDays(E, 49), 'Pentecôte', 0);
+  let mothers = lastSunday(y, 4);
+  if (ymd(mothers) === ymd(addDays(E, 49))) mothers = addDays(mothers, 7);
+  add(mothers, 'Fête des mères', 0);
+  add(nthSunday(y, 5, 3), 'Fête des pères', 0);
+  add(new Date(y, 5, 21), 'Fête de la musique', 0);
+  add(lastSunday(y, 9), "Passage à l'heure d'hiver", 0);
+  add(new Date(y, 9, 31), 'Halloween', 0);
+  add(new Date(y, 11, 24), 'Réveillon de Noël', 0);
+  add(new Date(y, 11, 31), 'Saint-Sylvestre', 0);
+  return (HCACHE[y] = H);
+}
+const holidaysOn = k => holidays(+k.slice(0, 4))[k] || [];
+
+/* ---------- Vue Calendrier ---------- */
+const partsOf = e => e.participants || [];
+const eventColor = e => e.color || (partsOf(e).length === 1 ? colorOf(partsOf(e)[0]) : 'var(--both)');
+const partLabel = ids => ids.length ? ids.map(nameOf).join(' et ') : 'Tous';
+const shortDate = k => parse(k).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+
+function eventsByDay() {
+  const byDay = {};
+  for (const e of S.events) {
+    const end = e.end_day && e.end_day > e.day ? e.end_day : e.day;
+    let d = parse(e.day);
+    for (let n = 0; n < 62; n++) {
+      const k = ymd(d);
+      (byDay[k] ||= []).push(e);
+      if (k >= end) break;
+      d = addDays(d, 1);
+    }
+  }
+  return byDay;
+}
+
 function vAgenda() {
   const m = S.month, mo = m.getMonth(), start = mondayOf(m), tk = todayK();
-  const byDay = {};
-  S.events.forEach(e => (byDay[e.day] ||= []).push(e));
+  const byDay = eventsByDay();
   let cells = '';
   for (let i = 0; i < 42; i++) {
-    const d = addDays(start, i), k = ymd(d), ev = byDay[k] || [];
+    const d = addDays(start, i), k = ymd(d), ev = byDay[k] || [], hol = holidaysOn(k);
     if (i % 7 === 0 && i > 0 && d.getMonth() !== mo) break;
-    cells += `<button class="${d.getMonth() !== mo ? 'out' : ''} ${k === tk ? 'is-today' : ''} ${k === S.selDay ? 'sel' : ''}" data-day="${k}" aria-label="${dayLong(d)}${ev.length ? `, ${ev.length} événement${ev.length > 1 ? 's' : ''}` : ''}"><span>${d.getDate()}</span><i>${ev.slice(0, 3).map(e => `<b style="background:${colorOf(e.who)}"></b>`).join('')}</i></button>`;
+    const ferie = hol.some(h => h.ferie), fete = hol.some(h => !h.ferie);
+    const label = [dayLong(d), ...hol.map(h => h.name), ev.length ? `${ev.length} évènement${ev.length > 1 ? 's' : ''}` : ''].filter(Boolean).join(', ');
+    cells += `<button class="${d.getMonth() !== mo ? 'out' : ''} ${k === tk ? 'is-today' : ''} ${k === S.selDay ? 'sel' : ''} ${ferie ? 'ferie' : ''}" data-day="${k}" aria-label="${esc(label)}"><span>${d.getDate()}</span><i>${fete ? '<b class="ring"></b>' : ''}${ev.slice(0, fete ? 2 : 3).map(e => `<b style="background:${eventColor(e)}"></b>`).join('')}</i></button>`;
   }
-  const sel = (byDay[S.selDay] || []).slice().sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
+  const hol = holidaysOn(S.selDay);
+  const sel = (byDay[S.selDay] || []).slice().sort((a, b) =>
+    (b.all_day ? 1 : 0) - (a.all_day ? 1 : 0) || (a.start_time || '').localeCompare(b.start_time || ''));
+  const timeCell = e => {
+    const multi = e.end_day && e.end_day > e.day;
+    if (multi) return `${e.day === S.selDay ? 'Dès le' : 'Jusqu’au'}<small>${shortDate(e.day === S.selDay ? e.day : e.end_day)}</small>`;
+    if (e.all_day || !e.start_time) return 'Journée';
+    return `${e.start_time.slice(0, 5)}${e.end_time ? `<small>${e.end_time.slice(0, 5)}</small>` : ''}`;
+  };
+  const rows = [
+    ...hol.map(h => `<li class="hol"><div class="ev"><span class="time">${h.ferie ? 'Férié' : 'Fête'}</span><span class="stripe ${h.ferie ? 'f' : 'p'}"></span><span class="body"><strong>${esc(h.name)}</strong><span>${h.ferie ? 'Jour férié' : 'À ne pas oublier'}</span></span></div></li>`),
+    ...sel.map(e => `<li><button class="ev" data-event="${e.id}">
+        <span class="time">${timeCell(e)}</span>
+        <span class="stripe" style="background:${eventColor(e)}"></span>
+        <span class="body"><strong>${esc(e.title)}</strong><span>${esc(partLabel(partsOf(e)))}${e.location ? ' — ' + esc(e.location) : ''}${e.note ? ' — ' + esc(e.note) : ''}</span></span>
+      </button></li>`),
+  ];
   return `
     <div class="bar">
       <button class="iconbtn sm" data-nav="prev" aria-label="Mois précédent">‹</button>
@@ -512,12 +637,8 @@ function vAgenda() {
     <div class="dow">${['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(x => `<span>${x}</span>`).join('')}</div>
     <div class="cal">${cells}</div>
     <div class="dayhead"><h3>${dayLong(parse(S.selDay))}</h3>${S.selDay !== tk ? `<button class="link" data-nav="today">Aujourd'hui</button>` : ''}</div>
-    ${sel.length ? `<ul class="evlist panel">${sel.map(e => `<li><button class="ev" data-event="${e.id}">
-        <span class="time">${e.start_time ? e.start_time.slice(0, 5) : 'Journée'}${e.end_time ? `<small>${e.end_time.slice(0, 5)}</small>` : ''}</span>
-        <span class="stripe" style="background:${colorOf(e.who)}"></span>
-        <span class="body"><strong>${esc(e.title)}</strong><span>${esc(nameOf(e.who))}${e.note ? ' — ' + esc(e.note) : ''}</span></span>
-      </button></li>`).join('')}</ul>`
-      : `<p class="hint">Rien de prévu ce jour-là. Ajoutez un événement avec le bouton +.</p>`}`;
+    ${rows.length ? `<ul class="evlist panel">${rows.join('')}</ul>`
+      : `<p class="hint">Rien de prévu ce jour-là. Ajoutez un évènement avec le bouton +.</p>`}`;
 }
 
 /* ---------- Vue Listes ---------- */
@@ -707,6 +828,7 @@ function sheet(html, mount) {
   document.addEventListener('keydown', onKey);
   scrim.addEventListener('click', e => { if (e.target === scrim) close(); });
   const f = scrim.querySelector('.sheet');
+  f.querySelector('[data-close]')?.addEventListener('click', close);
   mount(f, close);
   setTimeout(() => f.querySelector('[autofocus]')?.focus(), 60);
 }
@@ -714,24 +836,83 @@ function sheet(html, mount) {
 const whoOptions = sel => [...S.members.map(m => [m.user_id, m.display_name]), ['both', 'Nous deux']]
   .map(([v, l]) => `<option value="${esc(v)}" ${v === sel ? 'selected' : ''}>${esc(l)}</option>`).join('');
 
+const EV_COLORS = ['#D50000', '#F4B400', '#8E24AA', '#E67C73', '#33B679', '#F4511E', '#0B8043', '#616161',
+  '#7986CB', '#3F51B5', '#039BE5', '#A1703C', '#D25A82', '#6E5A99', '#5FC1C9', '#FFAD80', '#1C2526'];
+const FAMILY_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="8" cy="7" r="3"/><circle cx="16.5" cy="8" r="2.5"/><circle cx="12.5" cy="12.5" r="2"/><path d="M2.5 19c0-3 2.5-5.5 5.5-5.5 1.3 0 2.4.4 3.3 1.1-1.2.9-1.9 2.4-1.9 4V19z"/><path d="M12 19c0-2 1.6-3.2 3.3-3.2h1c1.4 0 2.5.5 3.2 1.3.6.6.9 1.2.9 1.9z"/></svg>';
+
 function eventModal(ev) {
-  const e = ev || { day: S.selDay, who: S.user.id, title: '', start_time: null, end_time: null, note: '' };
-  sheet(`<h2>${ev ? "Modifier l'événement" : 'Nouvel événement'}</h2>
-    <label>Titre<input name="title" value="${esc(e.title)}" required ${ev ? '' : 'autofocus'}></label>
-    <label>Date<input type="date" name="day" value="${e.day}" required></label>
+  const e = ev || { title: '', day: S.selDay, end_day: S.selDay, all_day: true, start_time: null, end_time: null,
+    color: null, participants: [], location: '', note: '' };
+  const allDay = e.all_day ?? !e.start_time;
+  let parts = [...partsOf(e)];
+  const hasMore = !!(e.location || e.note);
+  sheet(`<div class="shead"><button type="button" class="closex" data-close aria-label="Fermer">✕</button><h2>${ev ? "Modifier l'évènement" : 'Créer un nouvel évènement'}</h2></div>
+    <input class="big" name="title" placeholder="Titre" aria-label="Titre" value="${esc(e.title)}" required ${ev ? '' : 'autofocus'}>
     <div class="two">
+      <label>De :<input type="date" name="day" value="${e.day}" required></label>
+      <label>À :<input type="date" name="end_day" value="${e.end_day || e.day}" required></label>
+    </div>
+    <label class="toggle"><input type="checkbox" name="all_day" ${allDay ? 'checked' : ''}><span class="track"></span>Toute la journée</label>
+    <div class="two times" ${allDay ? 'hidden' : ''}>
       <label>Début<input type="time" name="start" value="${e.start_time ? e.start_time.slice(0, 5) : ''}"></label>
       <label>Fin<input type="time" name="end" value="${e.end_time ? e.end_time.slice(0, 5) : ''}"></label>
     </div>
-    <label>Pour<select name="who">${whoOptions(e.who)}</select></label>
-    <label>Note<textarea name="note" rows="2">${esc(e.note || '')}</textarea></label>
-    <div class="actions">${ev ? '<button type="button" class="btn ghost danger" data-del>Supprimer</button>' : ''}<button class="btn">Enregistrer</button></div>`,
+    <fieldset><legend>Couleur : <b class="clabel">${e.color ? 'Personnalisée' : 'Défaut'}</b></legend>
+      <div class="palette">
+        <label class="pc" style="--c:var(--brand)"><input type="radio" name="color" value="" ${!e.color ? 'checked' : ''} aria-label="Couleur par défaut"><span></span></label>
+        ${EV_COLORS.map(c => `<label class="pc" style="--c:${c}"><input type="radio" name="color" value="${c}" ${e.color === c ? 'checked' : ''} aria-label="Couleur ${c}"><span></span></label>`).join('')}
+      </div>
+    </fieldset>
+    <fieldset><legend>Participants : <b class="plabel"></b></legend>
+      <div class="people">
+        <button type="button" class="pp all" data-p="all" aria-label="Tous">${FAMILY_ICON}</button>
+        <span class="psep"></span>
+        ${S.members.map(m => `<button type="button" class="pp" data-p="${m.user_id}" style="background:${esc(m.color)}" aria-label="${esc(m.display_name)}">${esc(m.display_name.slice(0, 2))}</button>`).join('')}
+      </div>
+    </fieldset>
+    <button type="button" class="btn soft" data-more aria-expanded="${hasMore}">${hasMore ? "Moins d'options" : "Plus d'options"}</button>
+    <div class="more" ${hasMore ? '' : 'hidden'}>
+      <label>Lieu<input name="location" value="${esc(e.location || '')}"></label>
+      <label>Note<textarea name="note" rows="3">${esc(e.note || '')}</textarea></label>
+    </div>
+    <button class="btn">Enregistrer</button>
+    ${ev ? '<button type="button" class="btn ghost danger" data-del>Supprimer l\'évènement</button>' : ''}`,
   (f, close) => {
+    const syncPeople = () => {
+      f.querySelectorAll('.pp').forEach(b => b.setAttribute('aria-pressed',
+        b.dataset.p === 'all' ? String(!parts.length) : String(parts.includes(b.dataset.p))));
+      f.querySelector('.plabel').textContent = partLabel(parts);
+    };
+    syncPeople();
+    f.querySelectorAll('.pp').forEach(b => b.onclick = () => {
+      const p = b.dataset.p;
+      if (p === 'all') parts = [];
+      else parts = parts.includes(p) ? parts.filter(x => x !== p) : [...parts, p];
+      if (parts.length === S.members.length && S.members.length > 1) parts = [];
+      syncPeople();
+    });
+    f.querySelectorAll('input[name="color"]').forEach(r => r.onchange = () =>
+      f.querySelector('.clabel').textContent = r.value ? 'Personnalisée' : 'Défaut');
+    f.all_day.onchange = () => { f.querySelector('.times').hidden = f.all_day.checked; };
+    f.day.onchange = () => { if (f.end_day.value < f.day.value) f.end_day.value = f.day.value; };
+    const more = f.querySelector('[data-more]');
+    more.onclick = () => {
+      const box = f.querySelector('.more'), open = box.hidden;
+      box.hidden = !open; more.setAttribute('aria-expanded', open);
+      more.textContent = open ? "Moins d'options" : "Plus d'options";
+    };
     f.onsubmit = async x => {
       x.preventDefault();
-      const fd = new FormData(f);
-      const row = { household_id: S.hh.id, title: fd.get('title').trim(), day: fd.get('day'),
-        start_time: fd.get('start') || null, end_time: fd.get('end') || null, who: fd.get('who'), note: fd.get('note').trim() || null };
+      const fd = new FormData(f), allDay = f.all_day.checked;
+      const day = fd.get('day'), end_day = fd.get('end_day') < day ? day : fd.get('end_day');
+      const row = {
+        household_id: S.hh.id, title: fd.get('title').trim(), day, end_day, all_day: allDay,
+        start_time: allDay ? null : (fd.get('start') || null), end_time: allDay ? null : (fd.get('end') || null),
+        color: fd.get('color') || null, participants: parts,
+        who: parts.length === 1 ? parts[0] : 'both',
+        location: (fd.get('location') || '').trim() || null, note: (fd.get('note') || '').trim() || null,
+      };
+      if (!row.title) return;
       try {
         await run('events', ev ? S.sb.from('events').update(row).eq('id', ev.id) : S.sb.from('events').insert(row));
         S.selDay = row.day; S.month = firstOfMonth(parse(row.day)); render(); close();
